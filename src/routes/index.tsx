@@ -29,7 +29,7 @@ function Home() {
       <div className="bg-background">
         <TopBar />
         <StoryTray />
-        <div className="h-px w-full bg-border" />
+        <div className="h-px w-full bg-[oklch(1_0_0_/_7%)]" />
       </div>
       <main className="mx-auto max-w-xl pt-3">
         {posts.map((p) => (

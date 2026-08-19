@@ -10,6 +10,7 @@ export function PostCard({ post }: { post: Post }) {
   const [saved, setSaved] = useState(false);
   const [burst, setBurst] = useState(0);
   const [comments, setComments] = useState(false);
+  const [following, setFollowing] = useState(false);
   const lastTap = useRef(0);
 
   const like = () => {
@@ -48,9 +49,24 @@ export function PostCard({ post }: { post: Post }) {
             )}
           </div>
         </div>
-        <button aria-label="More options">
-          <MoreHorizontal className="size-5 text-foreground/70" />
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setFollowing((f) => !f)}
+            aria-pressed={following}
+            className={cn(
+              "rounded-md px-3.5 py-[5px] text-[12px] font-semibold tracking-tight transition-colors duration-200",
+              "active:border-crimson active:text-crimson",
+              following
+                ? "border border-border bg-background text-foreground/60"
+                : "border border-foreground/80 bg-background text-foreground",
+            )}
+          >
+            {following ? "Following" : "Follow"}
+          </button>
+          <button aria-label="More options">
+            <MoreHorizontal className="size-5 text-foreground/70" />
+          </button>
+        </div>
       </div>
 
       <div
