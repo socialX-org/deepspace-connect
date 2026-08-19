@@ -5,7 +5,7 @@ import { stories, exploreGrid } from "@/lib/socialx-data";
 export function StoryViewer({ index, onClose }: { index: number; onClose: () => void }) {
   const [current, setCurrent] = useState(index);
   const [progress, setProgress] = useState(0);
-  const story = stories[current];
+  const story = stories[current] ?? stories[0]!;
 
   useEffect(() => {
     setProgress(0);
