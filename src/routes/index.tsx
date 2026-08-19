@@ -26,7 +26,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl">
+      <div className="bg-background">
         <TopBar />
         <StoryTray />
         <div className="h-px w-full bg-border" />

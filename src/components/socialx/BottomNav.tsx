@@ -64,20 +64,14 @@ export function BottomNav() {
                 aria-label={label}
                 className="flex flex-col items-center gap-1 outline-none"
               >
-                {isCreate ? (
-                  <span className="bg-crimson-gradient flex size-[30px] items-center justify-center rounded-[10px] ring-1 ring-white/15">
-                    <Icon className="size-[18px] text-foreground" strokeWidth={2.4} />
-                  </span>
-                ) : (
-                  <Icon
-                    className={cn(
-                      "size-[26px] transition-opacity",
-                      active ? "text-foreground opacity-100" : "text-foreground opacity-45",
-                    )}
-                    strokeWidth={active ? 2.3 : 1.7}
-                    fill={active && (label === "Home" || label === "Profile") ? "white" : "none"}
-                  />
-                )}
+                <Icon
+                  className={cn(
+                    "size-[26px] transition-opacity",
+                    active ? "text-foreground opacity-100" : "text-foreground opacity-45",
+                  )}
+                  strokeWidth={active ? 2.2 : 1.7}
+                  fill={!isCreate && active && (label === "Home" || label === "Profile") ? "currentColor" : "none"}
+                />
                 <span
                   className={cn(
                     "h-1 w-1 rounded-full",
