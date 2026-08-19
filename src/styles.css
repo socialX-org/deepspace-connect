@@ -107,6 +107,11 @@
   body {
     overscroll-behavior-y: none;
   }
+
+  /* Full-screen immersive story viewer: hide primary bottom nav */
+  body[data-story-open] nav[aria-label="Primary"] {
+    display: none;
+  }
 }
 
 @utility font-display {

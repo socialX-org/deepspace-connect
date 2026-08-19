@@ -71,7 +71,7 @@ export function BottomNav() {
                   )}
                   strokeWidth={active ? 2.2 : 1.7}
                   fill={!isCreate && active && (label === "Home" || label === "Profile") ? "currentColor" : "none"}
-                />}
+                />
                 <span
                   className={cn(
                     "h-1 w-1 rounded-full",
