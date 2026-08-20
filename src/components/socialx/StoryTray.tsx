@@ -42,7 +42,7 @@ export function StoryTray() {
   return (
     <>
       <div className="no-scrollbar overflow-x-auto">
-        <div className="mx-auto flex max-w-xl gap-0.5 px-2.5 pb-3 pt-1">
+        <div className="mx-auto flex max-w-xl gap-3.5 px-4 pb-3 pt-1">
           {stories.map((s, i) => (
             <StoryAvatar key={s.id} story={s} onOpen={() => setOpen(i)} />
           ))}
