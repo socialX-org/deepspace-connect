@@ -104,8 +104,43 @@ export const clips = [
   },
 ];
 
-export const comments = [
-  { id: "1", user: "sable", avatar: avatar1, text: "This is unreal.", time: "1h", likes: 24 },
+export type Comment = {
+  id: string;
+  user: string;
+  avatar: string;
+  text: string;
+  time: string;
+  likes: number;
+  replies?: Comment[];
+};
+
+export const comments: Comment[] = [
+  {
+    id: "1",
+    user: "sable",
+    avatar: avatar1,
+    text: "This is unreal.",
+    time: "1h",
+    likes: 24,
+    replies: [
+      {
+        id: "1a",
+        user: "mara.k",
+        avatar: avatar1,
+        text: "@sable thank you — shot it on the walk back.",
+        time: "58m",
+        likes: 6,
+      },
+      {
+        id: "1b",
+        user: "juno",
+        avatar: avatar1,
+        text: "@mara.k the restraint here is everything.",
+        time: "51m",
+        likes: 2,
+      },
+    ],
+  },
   {
     id: "2",
     user: "elias",
@@ -122,7 +157,26 @@ export const comments = [
     text: "What lens was this shot on?",
     time: "20m",
     likes: 1,
+    replies: [
+      {
+        id: "4a",
+        user: "nightform",
+        avatar: avatar2,
+        text: "@orenlab 35mm, wide open.",
+        time: "12m",
+        likes: 4,
+      },
+    ],
   },
+];
+
+export const shareTargets = [
+  { id: "1", user: "mara.k", avatar: avatar1 },
+  { id: "2", user: "orenlab", avatar: avatar2 },
+  { id: "3", user: "sable", avatar: avatar1 },
+  { id: "4", user: "elias", avatar: avatar2 },
+  { id: "5", user: "juno", avatar: avatar1 },
+  { id: "6", user: "nightform", avatar: avatar2 },
 ];
 
 export const suggestedUsers = [
