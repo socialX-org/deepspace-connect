@@ -29,7 +29,11 @@ export function PostCard({ post }: { post: Post }) {
   return (
     <article className="pb-7">
       <div className="flex items-center justify-between px-4 py-2.5">
-        <div className="flex items-center gap-3">
+        <Link
+          to="/u/$username"
+          params={{ username: post.user }}
+          className="flex items-center gap-3"
+        >
           <span className="story-ring block rounded-full p-[2px]">
             <span className="block rounded-full bg-background p-[2px]">
               <img
@@ -48,7 +52,7 @@ export function PostCard({ post }: { post: Post }) {
               <p className="text-[11px] text-muted-foreground">{post.location}</p>
             )}
           </div>
-        </div>
+        </Link>
         <div className="flex items-center gap-3">
           <button
             onClick={() => setFollowing((f) => !f)}
