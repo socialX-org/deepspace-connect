@@ -1,4 +1,5 @@
 import { Heart, MessageCircle, Repeat2, Send, Bookmark, MoreHorizontal } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import type { Post } from "@/lib/socialx-data";
 import { CommentsSheet } from "./CommentsSheet";
