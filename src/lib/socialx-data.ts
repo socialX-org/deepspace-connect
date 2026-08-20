@@ -184,3 +184,17 @@ export const notifications = [
   { id: "3", user: "juno", avatar: avatar1, text: "commented: archive worthy", time: "1h" },
   { id: "4", user: "orenlab", avatar: avatar2, text: "reposted your clip", time: "3h" },
 ];
+
+export function getUserProfile(username: string) {
+  const post = posts.find((p) => p.user === username);
+  const story = stories.find((s) => s.name === username);
+  return {
+    user: username,
+    name: username.replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+    avatar: post?.avatar ?? story?.avatar ?? avatar1,
+    bio: "Photographer · black frames only\nOn SocialX since 2024.",
+    posts: 96,
+    followers: "12.3k",
+    following: 208,
+  };
+}

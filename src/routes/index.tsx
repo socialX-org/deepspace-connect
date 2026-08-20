@@ -26,8 +26,8 @@ export const Route = createFileRoute("/")({
 function Home() {
   return (
     <div className="min-h-screen bg-background pb-24">
+      <TopBar />
       <div className="bg-background">
-        <TopBar />
         <StoryTray />
         <div className="h-px w-full bg-[oklch(1_0_0_/_7%)]" />
       </div>
