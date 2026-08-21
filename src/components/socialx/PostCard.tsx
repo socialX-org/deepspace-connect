@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import type { Post } from "@/lib/socialx-data";
 import { CommentsSheet } from "./CommentsSheet";
+import { ShareSheet } from "./ShareSheet";
 import { cn } from "@/lib/utils";
 
 export function PostCard({ post }: { post: Post }) {
@@ -11,6 +12,7 @@ export function PostCard({ post }: { post: Post }) {
   const [saved, setSaved] = useState(false);
   const [burst, setBurst] = useState(0);
   const [comments, setComments] = useState(false);
+  const [share, setShare] = useState(false);
   const [following, setFollowing] = useState(false);
   const lastTap = useRef(0);
 
@@ -118,7 +120,7 @@ export function PostCard({ post }: { post: Post }) {
               strokeWidth={1.9}
             />
           </button>
-          <button aria-label="Share">
+          <button aria-label="Share" onClick={() => setShare(true)}>
             <Send className="size-[24px] text-foreground" strokeWidth={1.8} />
           </button>
         </div>
@@ -149,6 +151,7 @@ export function PostCard({ post }: { post: Post }) {
       </div>
 
       {comments && <CommentsSheet post={post} onClose={() => setComments(false)} />}
+      {share && <ShareSheet post={post} onClose={() => setShare(false)} />}
     </article>
   );
 }
