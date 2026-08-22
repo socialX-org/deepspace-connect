@@ -178,8 +178,8 @@ export const defaultChat: ChatBlock[] = [
   },
 ];
 
-export function getThread(id: string) {
-  return threads.find((t) => t.id === id) ?? threads[0];
+export function getThread(id: string): Thread {
+  return threads.find((t) => t.id === id) ?? (threads[0] as Thread);
 }
 
 export function getChat(id: string) {
