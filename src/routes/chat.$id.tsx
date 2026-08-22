@@ -66,7 +66,8 @@ function Chat() {
   const push = (m: ChatMessage) =>
     setBlocks((b) => {
       const next = b.map((x) => ({ ...x, messages: [...x.messages] }));
-      next[next.length - 1].messages.push(m);
+      const tail = next[next.length - 1];
+      if (tail) tail.messages.push(m);
       return next;
     });
 
