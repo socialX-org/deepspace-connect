@@ -51,4 +51,4 @@ export const countries: Country[] = RAW.map(([code, dial]) => ({
 })).sort((a, b) => a.name.localeCompare(b.name));
 
 export const defaultCountry =
-  countries.find((c) => c.code === "NG") ?? countries[0];
+  countries.find((c) => c.code === "NG") ?? countries[0]!;
