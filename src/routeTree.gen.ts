@@ -18,7 +18,12 @@ import { Route as NewMessageRouteImport } from './routes/new-message'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
+import { Route as SignupIndexRouteImport } from './routes/signup.index'
+import { Route as SignupNameRouteImport } from './routes/signup.name'
+import { Route as SignupVerifyRouteImport } from './routes/signup.verify'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 
 const IndexRoute = IndexRouteImport.update({
@@ -66,10 +71,35 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatIdRoute = ChatIdRouteImport.update({
   id: '/chat/$id',
   path: '/chat/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SignupIndexRoute = SignupIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SignupRoute,
+} as any)
+const SignupNameRoute = SignupNameRouteImport.update({
+  id: '/name',
+  path: '/name',
+  getParentRoute: () => SignupRoute,
+} as any)
+const SignupVerifyRoute = SignupVerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => SignupRoute,
 } as any)
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
@@ -87,8 +117,13 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRouteWithChildren
+  '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
+  '/signup/name': typeof SignupNameRoute
+  '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
+  '/signup/': typeof SignupIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,8 +135,12 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
+  '/signup/name': typeof SignupNameRoute
+  '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
+  '/signup': typeof SignupIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,8 +153,13 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRouteWithChildren
+  '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
+  '/signup/name': typeof SignupNameRoute
+  '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
+  '/signup/': typeof SignupIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,8 +173,13 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/signup'
+    | '/welcome'
     | '/chat/$id'
+    | '/signup/name'
+    | '/signup/verify'
     | '/u/$username'
+    | '/signup/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -142,8 +191,12 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/welcome'
     | '/chat/$id'
+    | '/signup/name'
+    | '/signup/verify'
     | '/u/$username'
+    | '/signup'
   id:
     | '__root__'
     | '/'
@@ -155,8 +208,13 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/signup'
+    | '/welcome'
     | '/chat/$id'
+    | '/signup/name'
+    | '/signup/verify'
     | '/u/$username'
+    | '/signup/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -169,6 +227,8 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRouteWithChildren
+  WelcomeRoute: typeof WelcomeRoute
   ChatIdRoute: typeof ChatIdRoute
   UUsernameRoute: typeof UUsernameRoute
 }
@@ -238,12 +298,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat/$id': {
       id: '/chat/$id'
       path: '/chat/$id'
       fullPath: '/chat/$id'
       preLoaderRoute: typeof ChatIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/signup/': {
+      id: '/signup/'
+      path: '/'
+      fullPath: '/signup/'
+      preLoaderRoute: typeof SignupIndexRouteImport
+      parentRoute: typeof SignupRoute
+    }
+    '/signup/name': {
+      id: '/signup/name'
+      path: '/name'
+      fullPath: '/signup/name'
+      preLoaderRoute: typeof SignupNameRouteImport
+      parentRoute: typeof SignupRoute
+    }
+    '/signup/verify': {
+      id: '/signup/verify'
+      path: '/verify'
+      fullPath: '/signup/verify'
+      preLoaderRoute: typeof SignupVerifyRouteImport
+      parentRoute: typeof SignupRoute
     }
     '/u/$username': {
       id: '/u/$username'
@@ -255,6 +350,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface SignupRouteChildren {
+  SignupNameRoute: typeof SignupNameRoute
+  SignupVerifyRoute: typeof SignupVerifyRoute
+  SignupIndexRoute: typeof SignupIndexRoute
+}
+
+const SignupRouteChildren: SignupRouteChildren = {
+  SignupNameRoute: SignupNameRoute,
+  SignupVerifyRoute: SignupVerifyRoute,
+  SignupIndexRoute: SignupIndexRoute,
+}
+
+const SignupRouteWithChildren =
+  SignupRoute._addFileChildren(SignupRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClipsRoute: ClipsRoute,
@@ -265,6 +375,8 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRouteWithChildren,
+  WelcomeRoute: WelcomeRoute,
   ChatIdRoute: ChatIdRoute,
   UUsernameRoute: UUsernameRoute,
 }
