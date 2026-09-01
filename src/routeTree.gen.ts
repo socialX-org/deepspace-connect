@@ -23,7 +23,12 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
 import { Route as SignupIndexRouteImport } from './routes/signup.index'
 import { Route as SignupBirthdayRouteImport } from './routes/signup.birthday'
+import { Route as SignupGenderRouteImport } from './routes/signup.gender'
 import { Route as SignupNameRouteImport } from './routes/signup.name'
+import { Route as SignupPeopleRouteImport } from './routes/signup.people'
+import { Route as SignupPhotoRouteImport } from './routes/signup.photo'
+import { Route as SignupProfileRouteImport } from './routes/signup.profile'
+import { Route as SignupUsernameRouteImport } from './routes/signup.username'
 import { Route as SignupVerifyRouteImport } from './routes/signup.verify'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 
@@ -97,9 +102,34 @@ const SignupBirthdayRoute = SignupBirthdayRouteImport.update({
   path: '/birthday',
   getParentRoute: () => SignupRoute,
 } as any)
+const SignupGenderRoute = SignupGenderRouteImport.update({
+  id: '/gender',
+  path: '/gender',
+  getParentRoute: () => SignupRoute,
+} as any)
 const SignupNameRoute = SignupNameRouteImport.update({
   id: '/name',
   path: '/name',
+  getParentRoute: () => SignupRoute,
+} as any)
+const SignupPeopleRoute = SignupPeopleRouteImport.update({
+  id: '/people',
+  path: '/people',
+  getParentRoute: () => SignupRoute,
+} as any)
+const SignupPhotoRoute = SignupPhotoRouteImport.update({
+  id: '/photo',
+  path: '/photo',
+  getParentRoute: () => SignupRoute,
+} as any)
+const SignupProfileRoute = SignupProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => SignupRoute,
+} as any)
+const SignupUsernameRoute = SignupUsernameRouteImport.update({
+  id: '/username',
+  path: '/username',
   getParentRoute: () => SignupRoute,
 } as any)
 const SignupVerifyRoute = SignupVerifyRouteImport.update({
@@ -127,7 +157,12 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
   '/signup/birthday': typeof SignupBirthdayRoute
+  '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
+  '/signup/people': typeof SignupPeopleRoute
+  '/signup/photo': typeof SignupPhotoRoute
+  '/signup/profile': typeof SignupProfileRoute
+  '/signup/username': typeof SignupUsernameRoute
   '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
   '/signup/': typeof SignupIndexRoute
@@ -145,7 +180,12 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
   '/signup/birthday': typeof SignupBirthdayRoute
+  '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
+  '/signup/people': typeof SignupPeopleRoute
+  '/signup/photo': typeof SignupPhotoRoute
+  '/signup/profile': typeof SignupProfileRoute
+  '/signup/username': typeof SignupUsernameRoute
   '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
   '/signup': typeof SignupIndexRoute
@@ -165,7 +205,12 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
   '/signup/birthday': typeof SignupBirthdayRoute
+  '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
+  '/signup/people': typeof SignupPeopleRoute
+  '/signup/photo': typeof SignupPhotoRoute
+  '/signup/profile': typeof SignupProfileRoute
+  '/signup/username': typeof SignupUsernameRoute
   '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
   '/signup/': typeof SignupIndexRoute
@@ -186,7 +231,12 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/chat/$id'
     | '/signup/birthday'
+    | '/signup/gender'
     | '/signup/name'
+    | '/signup/people'
+    | '/signup/photo'
+    | '/signup/profile'
+    | '/signup/username'
     | '/signup/verify'
     | '/u/$username'
     | '/signup/'
@@ -204,7 +254,12 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/chat/$id'
     | '/signup/birthday'
+    | '/signup/gender'
     | '/signup/name'
+    | '/signup/people'
+    | '/signup/photo'
+    | '/signup/profile'
+    | '/signup/username'
     | '/signup/verify'
     | '/u/$username'
     | '/signup'
@@ -223,7 +278,12 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/chat/$id'
     | '/signup/birthday'
+    | '/signup/gender'
     | '/signup/name'
+    | '/signup/people'
+    | '/signup/photo'
+    | '/signup/profile'
+    | '/signup/username'
     | '/signup/verify'
     | '/u/$username'
     | '/signup/'
@@ -345,11 +405,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupBirthdayRouteImport
       parentRoute: typeof SignupRoute
     }
+    '/signup/gender': {
+      id: '/signup/gender'
+      path: '/gender'
+      fullPath: '/signup/gender'
+      preLoaderRoute: typeof SignupGenderRouteImport
+      parentRoute: typeof SignupRoute
+    }
     '/signup/name': {
       id: '/signup/name'
       path: '/name'
       fullPath: '/signup/name'
       preLoaderRoute: typeof SignupNameRouteImport
+      parentRoute: typeof SignupRoute
+    }
+    '/signup/people': {
+      id: '/signup/people'
+      path: '/people'
+      fullPath: '/signup/people'
+      preLoaderRoute: typeof SignupPeopleRouteImport
+      parentRoute: typeof SignupRoute
+    }
+    '/signup/photo': {
+      id: '/signup/photo'
+      path: '/photo'
+      fullPath: '/signup/photo'
+      preLoaderRoute: typeof SignupPhotoRouteImport
+      parentRoute: typeof SignupRoute
+    }
+    '/signup/profile': {
+      id: '/signup/profile'
+      path: '/profile'
+      fullPath: '/signup/profile'
+      preLoaderRoute: typeof SignupProfileRouteImport
+      parentRoute: typeof SignupRoute
+    }
+    '/signup/username': {
+      id: '/signup/username'
+      path: '/username'
+      fullPath: '/signup/username'
+      preLoaderRoute: typeof SignupUsernameRouteImport
       parentRoute: typeof SignupRoute
     }
     '/signup/verify': {
@@ -371,14 +466,24 @@ declare module '@tanstack/react-router' {
 
 interface SignupRouteChildren {
   SignupBirthdayRoute: typeof SignupBirthdayRoute
+  SignupGenderRoute: typeof SignupGenderRoute
   SignupNameRoute: typeof SignupNameRoute
+  SignupPeopleRoute: typeof SignupPeopleRoute
+  SignupPhotoRoute: typeof SignupPhotoRoute
+  SignupProfileRoute: typeof SignupProfileRoute
+  SignupUsernameRoute: typeof SignupUsernameRoute
   SignupVerifyRoute: typeof SignupVerifyRoute
   SignupIndexRoute: typeof SignupIndexRoute
 }
 
 const SignupRouteChildren: SignupRouteChildren = {
   SignupBirthdayRoute: SignupBirthdayRoute,
+  SignupGenderRoute: SignupGenderRoute,
   SignupNameRoute: SignupNameRoute,
+  SignupPeopleRoute: SignupPeopleRoute,
+  SignupPhotoRoute: SignupPhotoRoute,
+  SignupProfileRoute: SignupProfileRoute,
+  SignupUsernameRoute: SignupUsernameRoute,
   SignupVerifyRoute: SignupVerifyRoute,
   SignupIndexRoute: SignupIndexRoute,
 }
