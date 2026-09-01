@@ -25,6 +25,7 @@ import { Route as SignupIndexRouteImport } from './routes/signup.index'
 import { Route as SignupBirthdayRouteImport } from './routes/signup.birthday'
 import { Route as SignupGenderRouteImport } from './routes/signup.gender'
 import { Route as SignupNameRouteImport } from './routes/signup.name'
+import { Route as SignupPeopleRouteImport } from './routes/signup.people'
 import { Route as SignupPhotoRouteImport } from './routes/signup.photo'
 import { Route as SignupProfileRouteImport } from './routes/signup.profile'
 import { Route as SignupUsernameRouteImport } from './routes/signup.username'
@@ -111,6 +112,11 @@ const SignupNameRoute = SignupNameRouteImport.update({
   path: '/name',
   getParentRoute: () => SignupRoute,
 } as any)
+const SignupPeopleRoute = SignupPeopleRouteImport.update({
+  id: '/people',
+  path: '/people',
+  getParentRoute: () => SignupRoute,
+} as any)
 const SignupPhotoRoute = SignupPhotoRouteImport.update({
   id: '/photo',
   path: '/photo',
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
+  '/signup/people': typeof SignupPeopleRoute
   '/signup/photo': typeof SignupPhotoRoute
   '/signup/profile': typeof SignupProfileRoute
   '/signup/username': typeof SignupUsernameRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
+  '/signup/people': typeof SignupPeopleRoute
   '/signup/photo': typeof SignupPhotoRoute
   '/signup/profile': typeof SignupProfileRoute
   '/signup/username': typeof SignupUsernameRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
+  '/signup/people': typeof SignupPeopleRoute
   '/signup/photo': typeof SignupPhotoRoute
   '/signup/profile': typeof SignupProfileRoute
   '/signup/username': typeof SignupUsernameRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
+    | '/signup/people'
     | '/signup/photo'
     | '/signup/profile'
     | '/signup/username'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
+    | '/signup/people'
     | '/signup/photo'
     | '/signup/profile'
     | '/signup/username'
@@ -269,6 +280,7 @@ export interface FileRouteTypes {
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
+    | '/signup/people'
     | '/signup/photo'
     | '/signup/profile'
     | '/signup/username'
@@ -407,6 +419,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupNameRouteImport
       parentRoute: typeof SignupRoute
     }
+    '/signup/people': {
+      id: '/signup/people'
+      path: '/people'
+      fullPath: '/signup/people'
+      preLoaderRoute: typeof SignupPeopleRouteImport
+      parentRoute: typeof SignupRoute
+    }
     '/signup/photo': {
       id: '/signup/photo'
       path: '/photo'
@@ -449,6 +468,7 @@ interface SignupRouteChildren {
   SignupBirthdayRoute: typeof SignupBirthdayRoute
   SignupGenderRoute: typeof SignupGenderRoute
   SignupNameRoute: typeof SignupNameRoute
+  SignupPeopleRoute: typeof SignupPeopleRoute
   SignupPhotoRoute: typeof SignupPhotoRoute
   SignupProfileRoute: typeof SignupProfileRoute
   SignupUsernameRoute: typeof SignupUsernameRoute
@@ -460,6 +480,7 @@ const SignupRouteChildren: SignupRouteChildren = {
   SignupBirthdayRoute: SignupBirthdayRoute,
   SignupGenderRoute: SignupGenderRoute,
   SignupNameRoute: SignupNameRoute,
+  SignupPeopleRoute: SignupPeopleRoute,
   SignupPhotoRoute: SignupPhotoRoute,
   SignupProfileRoute: SignupProfileRoute,
   SignupUsernameRoute: SignupUsernameRoute,
