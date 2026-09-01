@@ -280,3 +280,28 @@
     opacity: 0.25;
   }
 }
+
+/* Profile-picture crop zoom slider */
+.crop-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  background: oklch(1 0 0 / 18%);
+  border-radius: 2px;
+}
+.crop-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: oklch(1 0 0);
+  box-shadow: 0 0 0 6px oklch(1 0 0 / 8%);
+}
+.crop-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 9999px;
+  background: oklch(1 0 0);
+}
