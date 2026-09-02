@@ -21,6 +21,8 @@ const groups = [
 
 function Settings() {
   const router = useRouter();
+  const navigate = useNavigate();
+  const { signOut } = useSession();
   return (
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-40 flex h-14 items-center gap-3 bg-background/95 px-4 backdrop-blur-xl">
