@@ -10,7 +10,9 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { BottomNav } from "@/components/socialx/BottomNav";
+import { SessionProvider } from "@/lib/session";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -130,11 +132,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background text-foreground">
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <BottomNav />
-      </div>
+      <SessionProvider>
+        <div className="min-h-screen bg-background text-foreground">
+          <AuthGate>
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+            <BottomNav />
+          </AuthGate>
+        </div>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

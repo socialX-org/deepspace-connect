@@ -1,5 +1,6 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/settings")({
   component: Settings,
@@ -21,6 +22,8 @@ const groups = [
 
 function Settings() {
   const router = useRouter();
+  const navigate = useNavigate();
+  const { signOut } = useSession();
   return (
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-40 flex h-14 items-center gap-3 bg-background/95 px-4 backdrop-blur-xl">
@@ -50,7 +53,15 @@ function Settings() {
             </div>
           </section>
         ))}
-        <button className="text-crimson mt-8 w-full py-3 text-[14px] font-semibold">Log out</button>
+        <button
+          onClick={() => {
+            signOut();
+            navigate({ to: "/welcome", replace: true });
+          }}
+          className="text-crimson mt-8 w-full py-3 text-[14px] font-semibold"
+        >
+          Log out
+        </button>
       </main>
     </div>
   );

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
 import { avatars } from "@/lib/socialx-data";
+import { useSession } from "@/lib/session";
 import { useSignup } from "@/lib/signup-store";
 
 export const Route = createFileRoute("/signup/people")({
@@ -33,6 +34,7 @@ const PEOPLE = [
 function PeopleStep() {
   const navigate = useNavigate();
   const { data, set } = useSignup();
+  const { signIn } = useSession();
   const [loading, setLoading] = useState(false);
 
   const toggle = (u: string) =>
@@ -44,7 +46,13 @@ function PeopleStep() {
 
   const finish = () => {
     setLoading(true);
-    setTimeout(() => navigate({ to: "/" }), 700);
+    setTimeout(() => {
+      signIn({
+        username: data.username || "you",
+        fullName: data.fullName || data.username || "You",
+      });
+      navigate({ to: "/", replace: true });
+    }, 700);
   };
 
   const count = data.following.length;
