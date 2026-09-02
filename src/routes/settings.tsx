@@ -1,5 +1,6 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/settings")({
   component: Settings,
