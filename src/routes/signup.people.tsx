@@ -44,7 +44,13 @@ function PeopleStep() {
 
   const finish = () => {
     setLoading(true);
-    setTimeout(() => navigate({ to: "/" }), 700);
+    setTimeout(() => {
+      signIn({
+        username: data.username || "you",
+        fullName: data.fullName || data.username || "You",
+      });
+      navigate({ to: "/", replace: true });
+    }, 700);
   };
 
   const count = data.following.length;
