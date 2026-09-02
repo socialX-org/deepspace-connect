@@ -34,6 +34,7 @@ const PEOPLE = [
 function PeopleStep() {
   const navigate = useNavigate();
   const { data, set } = useSignup();
+  const { signIn } = useSession();
   const [loading, setLoading] = useState(false);
 
   const toggle = (u: string) =>
