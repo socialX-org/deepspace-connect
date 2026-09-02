@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
 import { avatars } from "@/lib/socialx-data";
+import { useSession } from "@/lib/session";
 import { useSignup } from "@/lib/signup-store";
 
 export const Route = createFileRoute("/signup/people")({
