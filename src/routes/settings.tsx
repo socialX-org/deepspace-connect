@@ -53,7 +53,15 @@ function Settings() {
             </div>
           </section>
         ))}
-        <button className="text-crimson mt-8 w-full py-3 text-[14px] font-semibold">Log out</button>
+        <button
+          onClick={() => {
+            signOut();
+            navigate({ to: "/welcome", replace: true });
+          }}
+          className="text-crimson mt-8 w-full py-3 text-[14px] font-semibold"
+        >
+          Log out
+        </button>
       </main>
     </div>
   );
