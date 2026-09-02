@@ -18,6 +18,7 @@ import { Route as NewMessageRouteImport } from './routes/new-message'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SigninRouteImport } from './routes/signin'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
@@ -75,6 +76,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signin': typeof SigninRoute
   '/signup': typeof SignupRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
   '/signup/birthday': typeof SignupBirthdayRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
+  '/signin': typeof SigninRoute
   '/signup': typeof SignupRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
@@ -227,6 +236,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/signin'
     | '/signup'
     | '/welcome'
     | '/chat/$id'
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/signin'
     | '/welcome'
     | '/chat/$id'
     | '/signup/birthday'
@@ -274,6 +285,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/profile'
     | '/settings'
+    | '/signin'
     | '/signup'
     | '/welcome'
     | '/chat/$id'
@@ -299,6 +311,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
+  SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
   ChatIdRoute: typeof ChatIdRoute
@@ -368,6 +381,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -501,6 +521,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
+  SigninRoute: SigninRoute,
   SignupRoute: SignupRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
   ChatIdRoute: ChatIdRoute,
