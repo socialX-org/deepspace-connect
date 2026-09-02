@@ -17,6 +17,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as NewMessageRouteImport } from './routes/new-message'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RecoverRouteImport } from './routes/recover'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as SignupRouteImport } from './routes/signup'
@@ -71,6 +72,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecoverRoute = RecoverRouteImport.update({
+  id: '/recover',
+  path: '/recover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -158,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/recover': typeof RecoverRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRouteWithChildren
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/recover': typeof RecoverRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/recover': typeof RecoverRoute
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRouteWithChildren
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/new-message'
     | '/notifications'
     | '/profile'
+    | '/recover'
     | '/settings'
     | '/signin'
     | '/signup'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/new-message'
     | '/notifications'
     | '/profile'
+    | '/recover'
     | '/settings'
     | '/signin'
     | '/welcome'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/new-message'
     | '/notifications'
     | '/profile'
+    | '/recover'
     | '/settings'
     | '/signin'
     | '/signup'
@@ -310,6 +322,7 @@ export interface RootRouteChildren {
   NewMessageRoute: typeof NewMessageRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
+  RecoverRoute: typeof RecoverRoute
   SettingsRoute: typeof SettingsRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRouteWithChildren
@@ -374,6 +387,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recover': {
+      id: '/recover'
+      path: '/recover'
+      fullPath: '/recover'
+      preLoaderRoute: typeof RecoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -520,6 +540,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewMessageRoute: NewMessageRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
+  RecoverRoute: RecoverRoute,
   SettingsRoute: SettingsRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRouteWithChildren,
