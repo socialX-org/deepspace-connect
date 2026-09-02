@@ -17,11 +17,14 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as NewMessageRouteImport } from './routes/new-message'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RecoverRouteImport } from './routes/recover'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
+import { Route as RecoverIndexRouteImport } from './routes/recover.index'
+import { Route as RecoverCodeRouteImport } from './routes/recover.code'
 import { Route as SignupIndexRouteImport } from './routes/signup.index'
 import { Route as SignupBirthdayRouteImport } from './routes/signup.birthday'
 import { Route as SignupGenderRouteImport } from './routes/signup.gender'
@@ -73,6 +76,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecoverRoute = RecoverRouteImport.update({
+  id: '/recover',
+  path: '/recover',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -97,6 +105,16 @@ const ChatIdRoute = ChatIdRouteImport.update({
   id: '/chat/$id',
   path: '/chat/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const RecoverIndexRoute = RecoverIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RecoverRoute,
+} as any)
+const RecoverCodeRoute = RecoverCodeRouteImport.update({
+  id: '/code',
+  path: '/code',
+  getParentRoute: () => RecoverRoute,
 } as any)
 const SignupIndexRoute = SignupIndexRouteImport.update({
   id: '/',
@@ -158,11 +176,13 @@ export interface FileRoutesByFullPath {
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/recover': typeof RecoverRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
+  '/recover/code': typeof RecoverCodeRoute
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
@@ -172,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/signup/username': typeof SignupUsernameRoute
   '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
+  '/recover/': typeof RecoverIndexRoute
   '/signup/': typeof SignupIndexRoute
 }
 export interface FileRoutesByTo {
@@ -187,6 +208,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
+  '/recover/code': typeof RecoverCodeRoute
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
@@ -196,6 +218,7 @@ export interface FileRoutesByTo {
   '/signup/username': typeof SignupUsernameRoute
   '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
+  '/recover': typeof RecoverIndexRoute
   '/signup': typeof SignupIndexRoute
 }
 export interface FileRoutesById {
@@ -208,11 +231,13 @@ export interface FileRoutesById {
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
   '/profile': typeof ProfileRoute
+  '/recover': typeof RecoverRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
+  '/recover/code': typeof RecoverCodeRoute
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
@@ -222,6 +247,7 @@ export interface FileRoutesById {
   '/signup/username': typeof SignupUsernameRoute
   '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
+  '/recover/': typeof RecoverIndexRoute
   '/signup/': typeof SignupIndexRoute
 }
 export interface FileRouteTypes {
@@ -235,11 +261,13 @@ export interface FileRouteTypes {
     | '/new-message'
     | '/notifications'
     | '/profile'
+    | '/recover'
     | '/settings'
     | '/signin'
     | '/signup'
     | '/welcome'
     | '/chat/$id'
+    | '/recover/code'
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
@@ -249,6 +277,7 @@ export interface FileRouteTypes {
     | '/signup/username'
     | '/signup/verify'
     | '/u/$username'
+    | '/recover/'
     | '/signup/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -264,6 +293,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/welcome'
     | '/chat/$id'
+    | '/recover/code'
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
@@ -273,6 +303,7 @@ export interface FileRouteTypes {
     | '/signup/username'
     | '/signup/verify'
     | '/u/$username'
+    | '/recover'
     | '/signup'
   id:
     | '__root__'
@@ -284,11 +315,13 @@ export interface FileRouteTypes {
     | '/new-message'
     | '/notifications'
     | '/profile'
+    | '/recover'
     | '/settings'
     | '/signin'
     | '/signup'
     | '/welcome'
     | '/chat/$id'
+    | '/recover/code'
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
@@ -298,6 +331,7 @@ export interface FileRouteTypes {
     | '/signup/username'
     | '/signup/verify'
     | '/u/$username'
+    | '/recover/'
     | '/signup/'
   fileRoutesById: FileRoutesById
 }
@@ -310,6 +344,7 @@ export interface RootRouteChildren {
   NewMessageRoute: typeof NewMessageRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileRoute: typeof ProfileRoute
+  RecoverRoute: typeof RecoverRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRouteWithChildren
@@ -376,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recover': {
+      id: '/recover'
+      path: '/recover'
+      fullPath: '/recover'
+      preLoaderRoute: typeof RecoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -410,6 +452,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/chat/$id'
       preLoaderRoute: typeof ChatIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/recover/': {
+      id: '/recover/'
+      path: '/'
+      fullPath: '/recover/'
+      preLoaderRoute: typeof RecoverIndexRouteImport
+      parentRoute: typeof RecoverRoute
+    }
+    '/recover/code': {
+      id: '/recover/code'
+      path: '/code'
+      fullPath: '/recover/code'
+      preLoaderRoute: typeof RecoverCodeRouteImport
+      parentRoute: typeof RecoverRoute
     }
     '/signup/': {
       id: '/signup/'
@@ -484,6 +540,19 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface RecoverRouteChildren {
+  RecoverCodeRoute: typeof RecoverCodeRoute
+  RecoverIndexRoute: typeof RecoverIndexRoute
+}
+
+const RecoverRouteChildren: RecoverRouteChildren = {
+  RecoverCodeRoute: RecoverCodeRoute,
+  RecoverIndexRoute: RecoverIndexRoute,
+}
+
+const RecoverRouteWithChildren =
+  RecoverRoute._addFileChildren(RecoverRouteChildren)
+
 interface SignupRouteChildren {
   SignupBirthdayRoute: typeof SignupBirthdayRoute
   SignupGenderRoute: typeof SignupGenderRoute
@@ -520,6 +589,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewMessageRoute: NewMessageRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileRoute: ProfileRoute,
+  RecoverRoute: RecoverRouteWithChildren,
   SettingsRoute: SettingsRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRouteWithChildren,
