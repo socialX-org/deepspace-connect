@@ -75,12 +75,12 @@ function Welcome() {
           >
             Create account
           </Link>
-          <button
-            type="button"
+          <Link
+            to="/signin"
             className="flex h-[52px] w-full items-center justify-center rounded-full border border-[oklch(1_0_0_/_20%)] text-[15px] font-semibold text-foreground transition-all duration-200 active:scale-[0.985] active:border-[oklch(0.44_0.18_24_/_80%)]"
           >
-            Find account
-          </button>
+            I already have an account
+          </Link>
           <p className="pt-3 text-center text-[12px] leading-relaxed text-[oklch(1_0_0_/_40%)]">
             By continuing you agree to SocialX's Terms and Privacy Policy.
           </p>
