@@ -25,6 +25,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ChatIdRouteImport } from './routes/chat.$id'
 import { Route as RecoverIndexRouteImport } from './routes/recover.index'
 import { Route as RecoverCodeRouteImport } from './routes/recover.code'
+import { Route as RecoverPasswordRouteImport } from './routes/recover.password'
 import { Route as SignupIndexRouteImport } from './routes/signup.index'
 import { Route as SignupBirthdayRouteImport } from './routes/signup.birthday'
 import { Route as SignupGenderRouteImport } from './routes/signup.gender'
@@ -116,6 +117,11 @@ const RecoverCodeRoute = RecoverCodeRouteImport.update({
   path: '/code',
   getParentRoute: () => RecoverRoute,
 } as any)
+const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
+  id: '/password',
+  path: '/password',
+  getParentRoute: () => RecoverRoute,
+} as any)
 const SignupIndexRoute = SignupIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
   '/recover/code': typeof RecoverCodeRoute
+  '/recover/password': typeof RecoverPasswordRoute
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
   '/recover/code': typeof RecoverCodeRoute
+  '/recover/password': typeof RecoverPasswordRoute
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
@@ -238,6 +246,7 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/chat/$id': typeof ChatIdRoute
   '/recover/code': typeof RecoverCodeRoute
+  '/recover/password': typeof RecoverPasswordRoute
   '/signup/birthday': typeof SignupBirthdayRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/chat/$id'
     | '/recover/code'
+    | '/recover/password'
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/chat/$id'
     | '/recover/code'
+    | '/recover/password'
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
@@ -322,6 +333,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/chat/$id'
     | '/recover/code'
+    | '/recover/password'
     | '/signup/birthday'
     | '/signup/gender'
     | '/signup/name'
@@ -467,6 +479,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecoverCodeRouteImport
       parentRoute: typeof RecoverRoute
     }
+    '/recover/password': {
+      id: '/recover/password'
+      path: '/password'
+      fullPath: '/recover/password'
+      preLoaderRoute: typeof RecoverPasswordRouteImport
+      parentRoute: typeof RecoverRoute
+    }
     '/signup/': {
       id: '/signup/'
       path: '/'
@@ -542,11 +561,13 @@ declare module '@tanstack/react-router' {
 
 interface RecoverRouteChildren {
   RecoverCodeRoute: typeof RecoverCodeRoute
+  RecoverPasswordRoute: typeof RecoverPasswordRoute
   RecoverIndexRoute: typeof RecoverIndexRoute
 }
 
 const RecoverRouteChildren: RecoverRouteChildren = {
   RecoverCodeRoute: RecoverCodeRoute,
+  RecoverPasswordRoute: RecoverPasswordRoute,
   RecoverIndexRoute: RecoverIndexRoute,
 }
 

@@ -73,7 +73,7 @@ export function useSession() {
 }
 
 /** Routes reachable without a session. */
-export const PUBLIC_PATHS = ["/welcome", "/signin", "/signup"];
+export const PUBLIC_PATHS = ["/welcome", "/signin", "/signup", "/recover"];
 
 export function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
