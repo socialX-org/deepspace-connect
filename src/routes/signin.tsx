@@ -1,7 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
-import { Field, PrimaryButton } from "@/components/auth/controls";
+import { Field, GhostButton, PrimaryButton } from "@/components/auth/controls";
+import { isEmail, isPhone } from "@/lib/recovery-store";
 import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/signin")({
@@ -24,7 +26,9 @@ function SignIn() {
   const { signIn } = useSession();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [show, setShow] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [idError, setIdError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -32,53 +36,95 @@ function SignIn() {
     return () => document.body.removeAttribute("data-auth-open");
   }, []);
 
-  const valid = identifier.trim().length >= 3 && password.length >= 6;
+  const idValid = isEmail(identifier) || isPhone(identifier);
+  const valid = idValid && password.length >= 6;
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!valid || loading) return;
+  const submit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (loading) return;
+    if (!idValid) {
+      setIdError("Enter the email address or mobile number on your account.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Your password must be at least 6 characters.");
+      return;
+    }
     setError(null);
+    setIdError(null);
     setLoading(true);
     setTimeout(() => {
-      const handle = identifier.trim().replace(/^@/, "").split("@")[0] ?? "you";
-      signIn({ username: handle, fullName: handle });
+      const handle = isEmail(identifier)
+        ? (identifier.trim().split("@")[0] ?? "you").replace(/[^a-z0-9._]/gi, "").toLowerCase()
+        : `sx${identifier.replace(/\D/g, "").slice(-4)}`;
+      signIn({ username: handle || "you", fullName: handle || "you" });
       navigate({ to: "/", replace: true });
     }, 650);
   };
 
   return (
     <AuthShell
+      eyebrow="SocialX"
       title="Welcome back"
-      description="Sign in with your username, email or phone number to pick up exactly where you left off."
+      description="Sign in with the email address or mobile number on your account to pick up exactly where you left off."
       onBack={() => navigate({ to: "/welcome" })}
       footer={
-        <PrimaryButton onClick={submit} disabled={!valid} loading={loading}>
-          Sign in
-        </PrimaryButton>
+        <>
+          <PrimaryButton onClick={() => submit()} disabled={!valid} loading={loading}>
+            Sign in
+          </PrimaryButton>
+          <div className="mt-3">
+            <GhostButton type="button" onClick={() => navigate({ to: "/recover" })}>
+              Forgot password
+            </GhostButton>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/signup" })}
+            className="mt-4 w-full text-center text-[13px] text-[oklch(1_0_0_/_50%)] active:text-foreground"
+          >
+            New here? Create an account
+          </button>
+        </>
       }
     >
       <form onSubmit={submit} className="space-y-3">
         <Field
-          label="Username, email or phone"
+          label="Email or mobile number"
           value={identifier}
           autoComplete="username"
-          onChange={(e) => setIdentifier(e.target.value)}
+          inputMode="email"
+          error={idError}
+          onChange={(e) => {
+            setIdentifier(e.target.value);
+            setIdError(null);
+          }}
         />
         <Field
           label="Password"
-          type="password"
+          type={show ? "text" : "password"}
           value={password}
           autoComplete="current-password"
           error={error}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError(null);
+          }}
+          suffix={
+            <button
+              type="button"
+              onClick={() => setShow((s) => !s)}
+              aria-label={show ? "Hide password" : "Show password"}
+              className="ml-2 flex size-10 items-center justify-center rounded-full text-[oklch(1_0_0_/_55%)] active:scale-90"
+            >
+              {show ? (
+                <EyeOff className="size-5" strokeWidth={1.6} />
+              ) : (
+                <Eye className="size-5" strokeWidth={1.6} />
+              )}
+            </button>
+          }
         />
-        <button
-          type="button"
-          onClick={() => setError("Password recovery isn't available yet.")}
-          className="pt-1 text-[13px] text-[oklch(1_0_0_/_55%)]"
-        >
-          Forgot password?
-        </button>
       </form>
     </AuthShell>
   );
