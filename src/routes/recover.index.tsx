@@ -38,27 +38,29 @@ function FindAccount() {
     }
     setError(null);
     setLoading(true);
-    // Demo account lookup — an unknown-looking value returns "no account".
-    setTimeout(() => {
+    void (async () => {
       const method = isEmail(value) ? "email" : "phone";
-      const handle =
+      const identifier =
         method === "email"
-          ? (value.trim().split("@")[0] ?? "you").replace(/[^a-z0-9._]/gi, "").toLowerCase()
-          : `sx${value.replace(/\D/g, "").slice(-4)}`;
-      if (!handle) {
+          ? value.trim()
+          : value.trim().startsWith("+")
+            ? value.replace(/[^\d+]/g, "")
+            : `+${value.replace(/\D/g, "")}`;
+      const err = await sendRecoveryCode(
+        method === "email" ? { method, email: identifier } : { method, phone: identifier },
+      );
+      if (err) {
         setLoading(false);
-        setError("We couldn't find an account with those details.");
+        setError(err);
         return;
       }
-      set({
-        identifier: value.trim(),
-        method,
-        username: handle,
-        fullName: handle,
-        verified: false,
-      });
+      const handle =
+        method === "email"
+          ? (identifier.split("@")[0] ?? "you").replace(/[^a-z0-9._]/gi, "").toLowerCase()
+          : `sx${identifier.slice(-4)}`;
+      set({ identifier, method, username: handle, fullName: handle, verified: false });
       navigate({ to: "/recover/code" });
-    }, 700);
+    })();
   };
 
   return (
