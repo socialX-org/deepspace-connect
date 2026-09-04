@@ -17,16 +17,20 @@ export const Route = createFileRoute("/signup/verify")({
   }),
 });
 
-const CORRECT = "123456";
-
 function VerifyStep() {
   const navigate = useNavigate();
   const { data } = useSignup();
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const [status, setStatus] = useState<"idle" | "checking" | "error" | "expired" | "done">("idle");
+  const [message, setMessage] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(38);
   const [resending, setResending] = useState(false);
   const refs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const contact: Contact =
+    data.method === "email"
+      ? { method: "email", email: data.email }
+      : { method: "phone", phone: fullPhone(data.dial, data.phone) };
 
   const code = digits.join("");
 
@@ -41,23 +45,23 @@ function VerifyStep() {
   }, [seconds]);
 
   useEffect(() => {
-    if (code.length === 6 && status === "idle") verify(code);
+    if (code.length === 6 && status === "idle") void verify(code);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
-  const verify = (value: string) => {
+  const verify = async (value: string) => {
+    if (value.length < 6) return;
     setStatus("checking");
-    setTimeout(() => {
-      if (value === CORRECT) {
-        setStatus("done");
-        setTimeout(() => navigate({ to: "/signup/name" }), 700);
-      } else if (value === "000000") {
-        setStatus("expired");
-      } else {
-        setStatus("error");
-        if (navigator.vibrate) navigator.vibrate(18);
-      }
-    }, 800);
+    const err = await verifySignupCode(contact, value);
+    if (!err) {
+      setStatus("done");
+      setMessage(null);
+      setTimeout(() => navigate({ to: "/signup/name" }), 700);
+      return;
+    }
+    setMessage(err);
+    setStatus(err.toLowerCase().includes("expired") ? "expired" : "error");
+    if (navigator.vibrate) navigator.vibrate(18);
   };
 
   const write = (i: number, v: string) => {
