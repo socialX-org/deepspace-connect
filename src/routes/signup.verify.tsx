@@ -120,7 +120,7 @@ function VerifyStep() {
       footer={
         <>
           <PrimaryButton
-            onClick={() => verify(code)}
+            onClick={() => void verify(code)}
             loading={status === "checking"}
             disabled={code.length < 6 || status === "done"}
           >
@@ -171,14 +171,9 @@ function VerifyStep() {
       </div>
 
       <div className="mt-5 min-h-[22px] text-[13px]">
-        {status === "error" && (
+        {(status === "error" || status === "expired") && (
           <p className="reply-in text-[oklch(0.62_0.2_25)]">
-            That code isn't right. Check the digits and try again.
-          </p>
-        )}
-        {status === "expired" && (
-          <p className="reply-in text-[oklch(0.62_0.2_25)]">
-            This code has expired. Request a new one below.
+            {message ?? "That code isn't right. Check the digits and try again."}
           </p>
         )}
         {status === "done" && (
@@ -202,7 +197,7 @@ function VerifyStep() {
         ) : (
           <button
             type="button"
-            onClick={resend}
+            onClick={() => void resend()}
             disabled={resending}
             className="flex items-center gap-2 text-[13.5px] font-semibold text-foreground active:opacity-70"
           >
@@ -211,7 +206,7 @@ function VerifyStep() {
           </button>
         )}
         <p className="mt-2 text-[12.5px] text-[oklch(1_0_0_/_38%)]">
-          Demo: use 123456 to continue, 000000 to see the expired state.
+          Codes expire after a few minutes. Check your spam folder if it hasn't arrived.
         </p>
       </div>
     </AuthShell>
