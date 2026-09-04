@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
+import { saveProfile } from "@/lib/auth";
 import { avatars } from "@/lib/socialx-data";
 import { useSession } from "@/lib/session";
 import { useSignup } from "@/lib/signup-store";
@@ -87,6 +88,9 @@ function PeopleStep() {
           <PrimaryButton onClick={finish} loading={loading}>
             {count > 0 ? `Continue with ${count} following` : "Continue"}
           </PrimaryButton>
+          {error && (
+            <p className="reply-in pt-3 text-center text-[13px] text-[oklch(0.62_0.2_25)]">{error}</p>
+          )}
           <button
             type="button"
             onClick={finish}
