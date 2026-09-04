@@ -49,11 +49,24 @@ function ContactStep() {
         ? "Enter a valid phone number."
         : null;
 
-  const submit = () => {
+  const [sendError, setSendError] = useState<string | null>(null);
+
+  const submit = async () => {
     setTouched(true);
-    if (!valid) return;
+    if (!valid || loading) return;
+    setSendError(null);
     setLoading(true);
-    setTimeout(() => navigate({ to: "/signup/verify" }), 650);
+    const err = await sendSignupCode(
+      isEmail
+        ? { method: "email", email: data.email }
+        : { method: "phone", phone: fullPhone(data.dial, data.phone) },
+    );
+    if (err) {
+      setLoading(false);
+      setSendError(err);
+      return;
+    }
+    navigate({ to: "/signup/verify" });
   };
 
   return (
