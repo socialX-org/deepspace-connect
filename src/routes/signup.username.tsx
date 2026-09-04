@@ -3,6 +3,7 @@ import { Check, Loader2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
+import { isUsernameAvailable } from "@/lib/auth";
 import { useSignup } from "@/lib/signup-store";
 
 export const Route = createFileRoute("/signup/username")({
