@@ -3,6 +3,7 @@ import { Check, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Field, PrimaryButton } from "@/components/auth/controls";
+import { updatePassword } from "@/lib/auth";
 import { useSignup } from "@/lib/signup-store";
 
 export const Route = createFileRoute("/signup/name")({
@@ -23,6 +24,7 @@ function NameStep() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [touchedName, setTouchedName] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const p = data.password;
   const rules = [
