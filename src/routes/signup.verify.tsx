@@ -3,6 +3,7 @@ import { Check, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
+import { fullPhone, sendSignupCode, verifySignupCode, type Contact } from "@/lib/auth";
 import { maskDestination, useSignup } from "@/lib/signup-store";
 
 export const Route = createFileRoute("/signup/verify")({
@@ -92,15 +93,20 @@ function VerifyStep() {
     if (e.key === "ArrowRight") refs.current[i + 1]?.focus();
   };
 
-  const resend = () => {
+  const resend = async () => {
     setResending(true);
-    setTimeout(() => {
-      setResending(false);
-      setSeconds(38);
-      setDigits(Array(6).fill(""));
-      setStatus("idle");
-      refs.current[0]?.focus();
-    }, 900);
+    const err = await sendSignupCode(contact);
+    setResending(false);
+    if (err) {
+      setMessage(err);
+      setStatus("error");
+      return;
+    }
+    setSeconds(38);
+    setDigits(Array(6).fill(""));
+    setMessage(null);
+    setStatus("idle");
+    refs.current[0]?.focus();
   };
 
   const invalid = status === "error" || status === "expired";
