@@ -34,8 +34,9 @@ const PEOPLE = [
 function PeopleStep() {
   const navigate = useNavigate();
   const { data, set } = useSignup();
-  const { signIn } = useSession();
+  const { refresh } = useSession();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggle = (u: string) =>
     set({
@@ -45,14 +46,28 @@ function PeopleStep() {
     });
 
   const finish = () => {
-    setLoading(true);
-    setTimeout(() => {
-      signIn({
-        username: data.username || "you",
-        fullName: data.fullName || data.username || "You",
+    void (async () => {
+      setLoading(true);
+      setError(null);
+      const b = data.birthday;
+      const err = await saveProfile({
+        username: (data.username || "").toLowerCase(),
+        full_name: data.fullName || data.username || "",
+        birthday: b ? `${b.y}-${String(b.m).padStart(2, "0")}-${String(b.d).padStart(2, "0")}` : null,
+        gender: data.gender || null,
+        bio: data.bio,
+        location: data.location,
+        interests: data.interests,
+        avatar_url: data.photo,
       });
+      if (err) {
+        setLoading(false);
+        setError(err);
+        return;
+      }
+      await refresh();
       navigate({ to: "/", replace: true });
-    }, 700);
+    })();
   };
 
   const count = data.following.length;
