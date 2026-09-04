@@ -43,16 +43,32 @@ function NameStep() {
       title="Enter your full name & password"
       description="Your name is how friends recognise you on SocialX. Your password keeps the account yours alone."
       footer={
-        <PrimaryButton
-          disabled={!valid}
-          loading={loading}
-          onClick={() => {
-            setLoading(true);
-            setTimeout(() => navigate({ to: "/signup/birthday" }), 500);
-          }}
-        >
-          Continue
-        </PrimaryButton>
+        <>
+          <PrimaryButton
+            disabled={!valid}
+            loading={loading}
+            onClick={() => {
+              void (async () => {
+                setLoading(true);
+                setSaveError(null);
+                const err = await updatePassword(data.password);
+                setLoading(false);
+                if (err) {
+                  setSaveError(err);
+                  return;
+                }
+                navigate({ to: "/signup/birthday" });
+              })();
+            }}
+          >
+            Continue
+          </PrimaryButton>
+          {saveError && (
+            <p className="reply-in pt-3 text-center text-[13px] text-[oklch(0.62_0.2_25)]">
+              {saveError}
+            </p>
+          )}
+        </>
       }
     >
       <div className="space-y-4">
