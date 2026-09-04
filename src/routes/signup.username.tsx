@@ -17,8 +17,6 @@ export const Route = createFileRoute("/signup/username")({
   }),
 });
 
-const TAKEN = ["mara.k", "nightform", "orenlab", "juno", "sable", "elias", "socialx"];
-
 type State = "empty" | "invalid" | "checking" | "free" | "taken";
 
 function UsernameStep() {
@@ -34,8 +32,17 @@ function UsernameStep() {
     if (!v) return setState("empty");
     if (!/^[a-z0-9._]{3,20}$/.test(v)) return setState("invalid");
     setState("checking");
-    const t = setTimeout(() => setState(TAKEN.includes(v) ? "taken" : "free"), 600);
-    return () => clearTimeout(t);
+    let cancelled = false;
+    // Debounced live lookup against the profiles table.
+    const t = setTimeout(() => {
+      void isUsernameAvailable(v)
+        .then((free) => !cancelled && setState(free ? "free" : "taken"))
+        .catch(() => !cancelled && setState("free"));
+    }, 450);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
   }, [value]);
 
   const suggestions = value
