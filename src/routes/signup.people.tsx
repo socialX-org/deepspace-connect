@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
+import { saveProfile } from "@/lib/auth";
 import { avatars } from "@/lib/socialx-data";
 import { useSession } from "@/lib/session";
 import { useSignup } from "@/lib/signup-store";
@@ -34,8 +35,9 @@ const PEOPLE = [
 function PeopleStep() {
   const navigate = useNavigate();
   const { data, set } = useSignup();
-  const { signIn } = useSession();
+  const { refresh } = useSession();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggle = (u: string) =>
     set({
@@ -45,14 +47,28 @@ function PeopleStep() {
     });
 
   const finish = () => {
-    setLoading(true);
-    setTimeout(() => {
-      signIn({
-        username: data.username || "you",
-        fullName: data.fullName || data.username || "You",
+    void (async () => {
+      setLoading(true);
+      setError(null);
+      const b = data.birthday;
+      const err = await saveProfile({
+        username: (data.username || "").toLowerCase(),
+        full_name: data.fullName || data.username || "",
+        birthday: b ? `${b.y}-${String(b.m).padStart(2, "0")}-${String(b.d).padStart(2, "0")}` : null,
+        gender: data.gender || null,
+        bio: data.bio,
+        location: data.location,
+        interests: data.interests,
+        avatar_url: data.photo,
       });
+      if (err) {
+        setLoading(false);
+        setError(err);
+        return;
+      }
+      await refresh();
       navigate({ to: "/", replace: true });
-    }, 700);
+    })();
   };
 
   const count = data.following.length;
@@ -72,6 +88,9 @@ function PeopleStep() {
           <PrimaryButton onClick={finish} loading={loading}>
             {count > 0 ? `Continue with ${count} following` : "Continue"}
           </PrimaryButton>
+          {error && (
+            <p className="reply-in pt-3 text-center text-[13px] text-[oklch(0.62_0.2_25)]">{error}</p>
+          )}
           <button
             type="button"
             onClick={finish}

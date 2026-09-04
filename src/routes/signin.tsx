@@ -3,6 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Field, GhostButton, PrimaryButton } from "@/components/auth/controls";
+import { signInWithIdentifier } from "@/lib/auth";
 import { isEmail, isPhone } from "@/lib/recovery-store";
 import { useSession } from "@/lib/session";
 
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/signin")({
 
 function SignIn() {
   const navigate = useNavigate();
-  const { signIn } = useSession();
+  const { refresh } = useSession();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
@@ -39,7 +40,7 @@ function SignIn() {
   const idValid = isEmail(identifier) || isPhone(identifier);
   const valid = idValid && password.length >= 6;
 
-  const submit = (e?: React.FormEvent) => {
+  const submit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (loading) return;
     if (!idValid) {
@@ -53,13 +54,14 @@ function SignIn() {
     setError(null);
     setIdError(null);
     setLoading(true);
-    setTimeout(() => {
-      const handle = isEmail(identifier)
-        ? (identifier.trim().split("@")[0] ?? "you").replace(/[^a-z0-9._]/gi, "").toLowerCase()
-        : `sx${identifier.replace(/\D/g, "").slice(-4)}`;
-      signIn({ username: handle || "you", fullName: handle || "you" });
-      navigate({ to: "/", replace: true });
-    }, 650);
+    const err = await signInWithIdentifier(identifier, password);
+    if (err) {
+      setLoading(false);
+      setError(err);
+      return;
+    }
+    await refresh();
+    navigate({ to: "/", replace: true });
   };
 
   return (

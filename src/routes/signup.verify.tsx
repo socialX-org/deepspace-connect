@@ -3,6 +3,7 @@ import { Check, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
+import { fullPhone, sendSignupCode, verifySignupCode, type Contact } from "@/lib/auth";
 import { maskDestination, useSignup } from "@/lib/signup-store";
 
 export const Route = createFileRoute("/signup/verify")({
@@ -17,16 +18,20 @@ export const Route = createFileRoute("/signup/verify")({
   }),
 });
 
-const CORRECT = "123456";
-
 function VerifyStep() {
   const navigate = useNavigate();
   const { data } = useSignup();
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const [status, setStatus] = useState<"idle" | "checking" | "error" | "expired" | "done">("idle");
+  const [message, setMessage] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(38);
   const [resending, setResending] = useState(false);
   const refs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const contact: Contact =
+    data.method === "email"
+      ? { method: "email", email: data.email }
+      : { method: "phone", phone: fullPhone(data.dial, data.phone) };
 
   const code = digits.join("");
 
@@ -41,23 +46,23 @@ function VerifyStep() {
   }, [seconds]);
 
   useEffect(() => {
-    if (code.length === 6 && status === "idle") verify(code);
+    if (code.length === 6 && status === "idle") void verify(code);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
-  const verify = (value: string) => {
+  const verify = async (value: string) => {
+    if (value.length < 6) return;
     setStatus("checking");
-    setTimeout(() => {
-      if (value === CORRECT) {
-        setStatus("done");
-        setTimeout(() => navigate({ to: "/signup/name" }), 700);
-      } else if (value === "000000") {
-        setStatus("expired");
-      } else {
-        setStatus("error");
-        if (navigator.vibrate) navigator.vibrate(18);
-      }
-    }, 800);
+    const err = await verifySignupCode(contact, value);
+    if (!err) {
+      setStatus("done");
+      setMessage(null);
+      setTimeout(() => navigate({ to: "/signup/name" }), 700);
+      return;
+    }
+    setMessage(err);
+    setStatus(err.toLowerCase().includes("expired") ? "expired" : "error");
+    if (navigator.vibrate) navigator.vibrate(18);
   };
 
   const write = (i: number, v: string) => {
@@ -88,15 +93,20 @@ function VerifyStep() {
     if (e.key === "ArrowRight") refs.current[i + 1]?.focus();
   };
 
-  const resend = () => {
+  const resend = async () => {
     setResending(true);
-    setTimeout(() => {
-      setResending(false);
-      setSeconds(38);
-      setDigits(Array(6).fill(""));
-      setStatus("idle");
-      refs.current[0]?.focus();
-    }, 900);
+    const err = await sendSignupCode(contact);
+    setResending(false);
+    if (err) {
+      setMessage(err);
+      setStatus("error");
+      return;
+    }
+    setSeconds(38);
+    setDigits(Array(6).fill(""));
+    setMessage(null);
+    setStatus("idle");
+    refs.current[0]?.focus();
   };
 
   const invalid = status === "error" || status === "expired";
@@ -110,7 +120,7 @@ function VerifyStep() {
       footer={
         <>
           <PrimaryButton
-            onClick={() => verify(code)}
+            onClick={() => void verify(code)}
             loading={status === "checking"}
             disabled={code.length < 6 || status === "done"}
           >
@@ -161,14 +171,9 @@ function VerifyStep() {
       </div>
 
       <div className="mt-5 min-h-[22px] text-[13px]">
-        {status === "error" && (
+        {(status === "error" || status === "expired") && (
           <p className="reply-in text-[oklch(0.62_0.2_25)]">
-            That code isn't right. Check the digits and try again.
-          </p>
-        )}
-        {status === "expired" && (
-          <p className="reply-in text-[oklch(0.62_0.2_25)]">
-            This code has expired. Request a new one below.
+            {message ?? "That code isn't right. Check the digits and try again."}
           </p>
         )}
         {status === "done" && (
@@ -192,7 +197,7 @@ function VerifyStep() {
         ) : (
           <button
             type="button"
-            onClick={resend}
+            onClick={() => void resend()}
             disabled={resending}
             className="flex items-center gap-2 text-[13.5px] font-semibold text-foreground active:opacity-70"
           >
@@ -201,7 +206,7 @@ function VerifyStep() {
           </button>
         )}
         <p className="mt-2 text-[12.5px] text-[oklch(1_0_0_/_38%)]">
-          Demo: use 123456 to continue, 000000 to see the expired state.
+          Codes expire after a few minutes. Check your spam folder if it hasn't arrived.
         </p>
       </div>
     </AuthShell>

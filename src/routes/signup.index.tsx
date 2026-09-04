@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { CountryPicker } from "@/components/auth/CountryPicker";
 import { Field, PrimaryButton } from "@/components/auth/controls";
+import { fullPhone, sendSignupCode } from "@/lib/auth";
 import { countries, defaultCountry, type Country } from "@/lib/countries";
 import { useSignup } from "@/lib/signup-store";
 
@@ -49,11 +50,24 @@ function ContactStep() {
         ? "Enter a valid phone number."
         : null;
 
-  const submit = () => {
+  const [sendError, setSendError] = useState<string | null>(null);
+
+  const submit = async () => {
     setTouched(true);
-    if (!valid) return;
+    if (!valid || loading) return;
+    setSendError(null);
     setLoading(true);
-    setTimeout(() => navigate({ to: "/signup/verify" }), 650);
+    const err = await sendSignupCode(
+      isEmail
+        ? { method: "email", email: data.email }
+        : { method: "phone", phone: fullPhone(data.dial, data.phone) },
+    );
+    if (err) {
+      setLoading(false);
+      setSendError(err);
+      return;
+    }
+    navigate({ to: "/signup/verify" });
   };
 
   return (
@@ -70,9 +84,14 @@ function ContactStep() {
         onBack={() => navigate({ to: "/welcome" })}
         footer={
           <>
-            <PrimaryButton onClick={submit} loading={loading} disabled={!valid}>
+            <PrimaryButton onClick={() => void submit()} loading={loading} disabled={!valid}>
               {loading ? "Sending code" : "Continue"}
             </PrimaryButton>
+            {sendError && (
+              <p className="reply-in pt-3 text-center text-[13px] text-[oklch(0.62_0.2_25)]">
+                {sendError}
+              </p>
+            )}
             <p className="pt-4 text-center text-[13px] text-[oklch(1_0_0_/_50%)]">
               Already have an account?{" "}
               <span className="font-semibold text-foreground">Log in</span>

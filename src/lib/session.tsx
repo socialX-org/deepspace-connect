@@ -4,13 +4,13 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { supabase } from "@/lib/supabase";
 
-const STORAGE_KEY = "socialx.session";
-
-export type SessionUser = { username: string; fullName: string };
+export type SessionUser = { id: string; username: string; fullName: string };
 
 type SessionState =
   | { status: "loading"; user: null }
@@ -18,50 +18,67 @@ type SessionState =
   | { status: "signed-in"; user: SessionUser };
 
 type Ctx = SessionState & {
-  signIn: (user: SessionUser) => void;
-  signOut: () => void;
+  /** Re-read the Supabase session + profile (call after completing signup). */
+  refresh: () => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 const SessionContext = createContext<Ctx | null>(null);
 
+async function loadUser(): Promise<SessionUser | null> {
+  const { data } = await supabase.auth.getSession();
+  const authUser = data.session?.user;
+  if (!authUser) return null;
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username, full_name")
+    .eq("id", authUser.id)
+    .maybeSingle();
+
+  const fallback =
+    (authUser.email?.split("@")[0] ?? "") ||
+    `sx${(authUser.phone ?? "").slice(-4)}` ||
+    "you";
+
+  return {
+    id: authUser.id,
+    username: profile?.username ?? fallback,
+    fullName: profile?.full_name || profile?.username || fallback,
+  };
+}
+
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SessionState>({ status: "loading", user: null });
+  const mounted = useRef(true);
 
-  // Read the persisted session after hydration so the server and the first
-  // client render agree, then settle into signed-in / signed-out.
+  const apply = useCallback(async () => {
+    const user = await loadUser();
+    if (!mounted.current) return;
+    setState(user ? { status: "signed-in", user } : { status: "signed-out", user: null });
+  }, []);
+
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? (JSON.parse(raw) as SessionUser) : null;
-      if (parsed?.username) {
-        setState({ status: "signed-in", user: parsed });
-        return;
-      }
-    } catch {
-      /* corrupted value — treat as signed out */
-    }
+    mounted.current = true;
+    void apply();
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "TOKEN_REFRESHED") return;
+      void apply();
+    });
+
+    return () => {
+      mounted.current = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [apply]);
+
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
     setState({ status: "signed-out", user: null });
   }, []);
 
-  const signIn = useCallback((user: SessionUser) => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-    } catch {
-      /* storage unavailable — session stays in memory */
-    }
-    setState({ status: "signed-in", user });
-  }, []);
-
-  const signOut = useCallback(() => {
-    try {
-      window.localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      /* ignore */
-    }
-    setState({ status: "signed-out", user: null });
-  }, []);
-
-  const value = useMemo<Ctx>(() => ({ ...state, signIn, signOut }), [state, signIn, signOut]);
+  const value = useMemo<Ctx>(() => ({ ...state, refresh: apply, signOut }), [state, apply, signOut]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
@@ -75,6 +92,14 @@ export function useSession() {
 /** Routes reachable without a session. */
 export const PUBLIC_PATHS = ["/welcome", "/signin", "/signup", "/recover"];
 
+/** Auth screens a signed-in user should be bounced away from. The signup and
+ *  recovery flows stay reachable: the user is already authenticated mid-flow. */
+export const ENTRY_PATHS = ["/welcome", "/signin"];
+
 export function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+export function isEntryPath(pathname: string) {
+  return ENTRY_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }

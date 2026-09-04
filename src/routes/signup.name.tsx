@@ -3,6 +3,7 @@ import { Check, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Field, PrimaryButton } from "@/components/auth/controls";
+import { updatePassword } from "@/lib/auth";
 import { useSignup } from "@/lib/signup-store";
 
 export const Route = createFileRoute("/signup/name")({
@@ -23,6 +24,7 @@ function NameStep() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [touchedName, setTouchedName] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const p = data.password;
   const rules = [
@@ -43,16 +45,32 @@ function NameStep() {
       title="Enter your full name & password"
       description="Your name is how friends recognise you on SocialX. Your password keeps the account yours alone."
       footer={
-        <PrimaryButton
-          disabled={!valid}
-          loading={loading}
-          onClick={() => {
-            setLoading(true);
-            setTimeout(() => navigate({ to: "/signup/birthday" }), 500);
-          }}
-        >
-          Continue
-        </PrimaryButton>
+        <>
+          <PrimaryButton
+            disabled={!valid}
+            loading={loading}
+            onClick={() => {
+              void (async () => {
+                setLoading(true);
+                setSaveError(null);
+                const err = await updatePassword(data.password);
+                setLoading(false);
+                if (err) {
+                  setSaveError(err);
+                  return;
+                }
+                navigate({ to: "/signup/birthday" });
+              })();
+            }}
+          >
+            Continue
+          </PrimaryButton>
+          {saveError && (
+            <p className="reply-in pt-3 text-center text-[13px] text-[oklch(0.62_0.2_25)]">
+              {saveError}
+            </p>
+          )}
+        </>
       }
     >
       <div className="space-y-4">
