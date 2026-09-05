@@ -82,6 +82,7 @@ function UpdatePassword() {
             Update password
           </PrimaryButton>
         }
+        footerNote={saveError}
       >
         <div className="space-y-4">
           <Field
