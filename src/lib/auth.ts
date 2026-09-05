@@ -36,7 +36,9 @@ export async function sendSignupLink(email: string) {
     email: address,
     options: {
       shouldCreateUser: true,
-      emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/signup/name` : undefined,
+      ...(typeof window !== "undefined"
+        ? { emailRedirectTo: `${window.location.origin}/signup/name` }
+        : {}),
     },
   });
   if (!error && typeof window !== "undefined") {
