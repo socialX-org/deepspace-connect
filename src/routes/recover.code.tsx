@@ -216,7 +216,7 @@ function RecoveryCode() {
           </button>
         )}
         <p className="mt-2 text-[12.5px] text-[oklch(1_0_0_/_38%)]">
-          Demo: use 123456 to continue, 000000 to see the expired state.
+          Codes expire after a few minutes. Check your spam folder if it hasn't arrived.
         </p>
       </div>
     </AuthShell>
