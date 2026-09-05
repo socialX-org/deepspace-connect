@@ -3,6 +3,7 @@ import { Check, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { PrimaryButton } from "@/components/auth/controls";
+import { sendRecoveryCode, verifyRecoveryCode, type Contact } from "@/lib/auth";
 import { maskIdentifier, useRecovery } from "@/lib/recovery-store";
 
 export const Route = createFileRoute("/recover/code")({
@@ -20,8 +21,6 @@ export const Route = createFileRoute("/recover/code")({
   }),
 });
 
-const CORRECT = "123456";
-
 function RecoveryCode() {
   const navigate = useNavigate();
   const { data, set } = useRecovery();
@@ -29,9 +28,15 @@ function RecoveryCode() {
   const [status, setStatus] = useState<"idle" | "checking" | "error" | "expired" | "done">("idle");
   const [seconds, setSeconds] = useState(42);
   const [resending, setResending] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   const refs = useRef<(HTMLInputElement | null)[]>([]);
 
   const code = digits.join("");
+
+  const contact: Contact =
+    data.method === "email"
+      ? { method: "email", email: data.identifier }
+      : { method: "phone", phone: data.identifier };
 
   // Guard: no matched account means the flow was skipped.
   useEffect(() => {
@@ -49,25 +54,24 @@ function RecoveryCode() {
   }, [seconds]);
 
   useEffect(() => {
-    if (code.length === 6 && status === "idle") verify(code);
+    if (code.length === 6 && status === "idle") void verify(code);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
-  const verify = (value: string) => {
+  const verify = async (value: string) => {
     if (value.length < 6) return;
     setStatus("checking");
-    setTimeout(() => {
-      if (value === CORRECT) {
-        setStatus("done");
-        set({ verified: true });
-        setTimeout(() => navigate({ to: "/recover/password" }), 650);
-      } else if (value === "000000") {
-        setStatus("expired");
-      } else {
-        setStatus("error");
-        if (navigator.vibrate) navigator.vibrate(18);
-      }
-    }, 800);
+    const err = await verifyRecoveryCode(contact, value);
+    if (!err) {
+      setStatus("done");
+      setMessage(null);
+      set({ verified: true });
+      setTimeout(() => navigate({ to: "/recover/password" }), 650);
+      return;
+    }
+    setMessage(err);
+    setStatus(err.toLowerCase().includes("expired") ? "expired" : "error");
+    if (navigator.vibrate) navigator.vibrate(18);
   };
 
   const write = (i: number, v: string) => {
@@ -98,15 +102,20 @@ function RecoveryCode() {
     if (e.key === "ArrowRight") refs.current[i + 1]?.focus();
   };
 
-  const resend = () => {
+  const resend = async () => {
     setResending(true);
-    setTimeout(() => {
-      setResending(false);
-      setSeconds(42);
-      setDigits(Array(6).fill(""));
-      setStatus("idle");
-      refs.current[0]?.focus();
-    }, 900);
+    const err = await sendRecoveryCode(contact);
+    setResending(false);
+    if (err) {
+      setMessage(err);
+      setStatus("error");
+      return;
+    }
+    setSeconds(42);
+    setDigits(Array(6).fill(""));
+    setMessage(null);
+    setStatus("idle");
+    refs.current[0]?.focus();
   };
 
   const invalid = status === "error" || status === "expired";
@@ -119,7 +128,7 @@ function RecoveryCode() {
       footer={
         <>
           <PrimaryButton
-            onClick={() => verify(code)}
+            onClick={() => void verify(code)}
             loading={status === "checking"}
             disabled={code.length < 6 || status === "done"}
           >
@@ -170,14 +179,9 @@ function RecoveryCode() {
       </div>
 
       <div className="mt-5 min-h-[22px] text-[13px]">
-        {status === "error" && (
+        {(status === "error" || status === "expired") && (
           <p className="reply-in text-[oklch(0.62_0.2_25)]">
-            That recovery code isn't right. Check the six digits and try again.
-          </p>
-        )}
-        {status === "expired" && (
-          <p className="reply-in text-[oklch(0.62_0.2_25)]">
-            This code has expired. Request a new one below.
+            {message ?? "That recovery code isn't right. Check the six digits and try again."}
           </p>
         )}
         {status === "done" && (
@@ -203,7 +207,7 @@ function RecoveryCode() {
         ) : (
           <button
             type="button"
-            onClick={resend}
+            onClick={() => void resend()}
             disabled={resending}
             className="flex items-center gap-2 text-[13.5px] font-semibold text-foreground active:opacity-70"
           >
@@ -212,7 +216,7 @@ function RecoveryCode() {
           </button>
         )}
         <p className="mt-2 text-[12.5px] text-[oklch(1_0_0_/_38%)]">
-          Demo: use 123456 to continue, 000000 to see the expired state.
+          Codes expire after a few minutes. Check your spam folder if it hasn't arrived.
         </p>
       </div>
     </AuthShell>

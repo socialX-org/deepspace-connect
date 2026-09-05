@@ -3,6 +3,7 @@ import { Check, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Field, GhostButton, PrimaryButton } from "@/components/auth/controls";
+import { updatePassword } from "@/lib/auth";
 import { passwordRules, useRecovery } from "@/lib/recovery-store";
 import { useSession } from "@/lib/session";
 
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/recover/password")({
 function UpdatePassword() {
   const navigate = useNavigate();
   const { data } = useRecovery();
-  const { signIn } = useSession();
+  const { refresh } = useSession();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showA, setShowA] = useState(false);
@@ -44,9 +45,13 @@ function UpdatePassword() {
   const matches = confirm.length > 0 && confirm === password;
   const valid = met === rules.length && matches;
 
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const finish = () => {
-    signIn({ username: data.username, fullName: data.fullName || data.username });
-    navigate({ to: "/", replace: true });
+    void (async () => {
+      await refresh();
+      navigate({ to: "/", replace: true });
+    })();
   };
 
   return (
@@ -56,20 +61,33 @@ function UpdatePassword() {
         description={`Choose a new password for @${data.username || "your account"}. Make it one you don't use anywhere else.`}
         onBack={() => navigate({ to: "/recover/code" })}
         footer={
-          <PrimaryButton
-            disabled={!valid}
-            loading={loading}
-            onClick={() => {
-              if (!valid) return;
-              setLoading(true);
-              setTimeout(() => {
-                setLoading(false);
-                setSaveSheet(true);
-              }, 700);
-            }}
-          >
-            Update password
-          </PrimaryButton>
+          <>
+            <PrimaryButton
+              disabled={!valid}
+              loading={loading}
+              onClick={() => {
+                if (!valid) return;
+                void (async () => {
+                  setLoading(true);
+                  setSaveError(null);
+                  const err = await updatePassword(password);
+                  setLoading(false);
+                  if (err) {
+                    setSaveError(err);
+                    return;
+                  }
+                  setSaveSheet(true);
+                })();
+              }}
+            >
+              Update password
+            </PrimaryButton>
+            {saveError && (
+              <p className="reply-in pt-3 text-center text-[13px] text-[oklch(0.62_0.2_25)]">
+                {saveError}
+              </p>
+            )}
+          </>
         }
       >
         <div className="space-y-4">

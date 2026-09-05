@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Field, PrimaryButton } from "@/components/auth/controls";
+import { sendRecoveryCode } from "@/lib/auth";
 import { isEmail, isPhone, useRecovery } from "@/lib/recovery-store";
 
 export const Route = createFileRoute("/recover/")({
