@@ -55,8 +55,10 @@ function Settings() {
         ))}
         <button
           onClick={() => {
-            signOut();
-            navigate({ to: "/welcome", replace: true });
+            void (async () => {
+              await signOut();
+              navigate({ to: "/welcome", replace: true });
+            })();
           }}
           className="text-crimson mt-8 w-full py-3 text-[14px] font-semibold"
         >
