@@ -61,28 +61,34 @@ function UpdatePassword() {
         description={`Choose a new password for @${data.username || "your account"}. Make it one you don't use anywhere else.`}
         onBack={() => navigate({ to: "/recover/code" })}
         footer={
-          <PrimaryButton
-            disabled={!valid}
-            loading={loading}
-            onClick={() => {
-              if (!valid) return;
-              void (async () => {
-                setLoading(true);
-                setSaveError(null);
-                const err = await updatePassword(password);
-                setLoading(false);
-                if (err) {
-                  setSaveError(err);
-                  return;
-                }
-                setSaveSheet(true);
-              })();
-            }}
-          >
-            Update password
-          </PrimaryButton>
+          <>
+            <PrimaryButton
+              disabled={!valid}
+              loading={loading}
+              onClick={() => {
+                if (!valid) return;
+                void (async () => {
+                  setLoading(true);
+                  setSaveError(null);
+                  const err = await updatePassword(password);
+                  setLoading(false);
+                  if (err) {
+                    setSaveError(err);
+                    return;
+                  }
+                  setSaveSheet(true);
+                })();
+              }}
+            >
+              Update password
+            </PrimaryButton>
+            {saveError && (
+              <p className="reply-in pt-3 text-center text-[13px] text-[oklch(0.62_0.2_25)]">
+                {saveError}
+              </p>
+            )}
+          </>
         }
-        footerNote={saveError}
       >
         <div className="space-y-4">
           <Field
