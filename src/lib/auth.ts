@@ -21,24 +21,41 @@ export function authError(error: { message: string } | null | undefined) {
   return error ? friendly(error.message) : null;
 }
 
-/** Sends a 6-digit OTP for signup (creates the user if needed). */
-export async function sendSignupCode(c: Contact) {
-  const { error } =
-    c.method === "email"
-      ? await supabase.auth.signInWithOtp({
-          email: c.email!.trim(),
-          options: { shouldCreateUser: true },
-        })
-      : await supabase.auth.signInWithOtp({ phone: c.phone!, options: { shouldCreateUser: true } });
+const PENDING_EMAIL_KEY = "socialx.signup.email";
+
+/** Remembers the address we sent a confirmation link to, so "Resend" survives a reload. */
+export function pendingSignupEmail() {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(PENDING_EMAIL_KEY);
+}
+
+/** Sends Supabase's confirmation link for signup (creates the user if needed). */
+export async function sendSignupLink(email: string) {
+  const address = email.trim();
+  const { error } = await supabase.auth.signInWithOtp({
+    email: address,
+    options: {
+      shouldCreateUser: true,
+      emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/signup/name` : undefined,
+    },
+  });
+  if (!error && typeof window !== "undefined") {
+    window.localStorage.setItem(PENDING_EMAIL_KEY, address);
+  }
   return authError(error);
 }
 
-export async function verifySignupCode(c: Contact, token: string) {
-  const { error } =
-    c.method === "email"
-      ? await supabase.auth.verifyOtp({ email: c.email!.trim(), token, type: "email" })
-      : await supabase.auth.verifyOtp({ phone: c.phone!, token, type: "sms" });
-  return authError(error);
+/** Required profile fields — used to decide whether signup is finished. */
+export async function isProfileComplete(userId: string) {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("full_name, birthday, gender, username")
+    .eq("id", userId)
+    .maybeSingle();
+  if (error || !data) return false;
+  return Boolean(
+    data.full_name?.trim() && data.birthday && data.gender?.trim() && data.username?.trim(),
+  );
 }
 
 /** Recovery: email uses the password-reset OTP, phone uses an SMS OTP. */
