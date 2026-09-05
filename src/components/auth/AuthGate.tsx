@@ -9,25 +9,31 @@ import { isEntryPath, isPublicPath, useSession } from "@/lib/session";
  * because the user is authenticated part-way through them).
  */
 export function AuthGate({ children }: { children: ReactNode }) {
-  const { status } = useSession();
+  const { status, user } = useSession();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const publicPath = isPublicPath(pathname);
   const entryPath = isEntryPath(pathname);
+  const inFlow = pathname === "/signup" || pathname.startsWith("/signup/") || pathname.startsWith("/recover");
+  // Authenticated but still missing required profile details: resume the signup flow.
+  const needsProfile = status === "signed-in" && !user.profileComplete;
 
   useEffect(() => {
     if (status === "loading") return;
     if (status === "signed-out" && !publicPath) {
       navigate({ to: "/welcome", replace: true });
-    } else if (status === "signed-in" && entryPath) {
+    } else if (needsProfile && !inFlow) {
+      navigate({ to: "/signup/name", replace: true });
+    } else if (status === "signed-in" && !needsProfile && entryPath) {
       navigate({ to: "/", replace: true });
     }
-  }, [status, publicPath, entryPath, navigate]);
+  }, [status, publicPath, entryPath, inFlow, needsProfile, navigate]);
 
   const blocked =
     status === "loading" ||
     (status === "signed-out" && !publicPath) ||
-    (status === "signed-in" && entryPath);
+    (needsProfile && !inFlow) ||
+    (status === "signed-in" && !needsProfile && entryPath);
 
   if (blocked) {
     return (

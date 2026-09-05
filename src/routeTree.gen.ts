@@ -28,13 +28,13 @@ import { Route as RecoverCodeRouteImport } from './routes/recover.code'
 import { Route as RecoverPasswordRouteImport } from './routes/recover.password'
 import { Route as SignupIndexRouteImport } from './routes/signup.index'
 import { Route as SignupBirthdayRouteImport } from './routes/signup.birthday'
+import { Route as SignupCheckEmailRouteImport } from './routes/signup.check-email'
 import { Route as SignupGenderRouteImport } from './routes/signup.gender'
 import { Route as SignupNameRouteImport } from './routes/signup.name'
 import { Route as SignupPeopleRouteImport } from './routes/signup.people'
 import { Route as SignupPhotoRouteImport } from './routes/signup.photo'
 import { Route as SignupProfileRouteImport } from './routes/signup.profile'
 import { Route as SignupUsernameRouteImport } from './routes/signup.username'
-import { Route as SignupVerifyRouteImport } from './routes/signup.verify'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 
 const IndexRoute = IndexRouteImport.update({
@@ -132,6 +132,11 @@ const SignupBirthdayRoute = SignupBirthdayRouteImport.update({
   path: '/birthday',
   getParentRoute: () => SignupRoute,
 } as any)
+const SignupCheckEmailRoute = SignupCheckEmailRouteImport.update({
+  id: '/check-email',
+  path: '/check-email',
+  getParentRoute: () => SignupRoute,
+} as any)
 const SignupGenderRoute = SignupGenderRouteImport.update({
   id: '/gender',
   path: '/gender',
@@ -162,11 +167,6 @@ const SignupUsernameRoute = SignupUsernameRouteImport.update({
   path: '/username',
   getParentRoute: () => SignupRoute,
 } as any)
-const SignupVerifyRoute = SignupVerifyRouteImport.update({
-  id: '/verify',
-  path: '/verify',
-  getParentRoute: () => SignupRoute,
-} as any)
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
@@ -191,13 +191,13 @@ export interface FileRoutesByFullPath {
   '/recover/code': typeof RecoverCodeRoute
   '/recover/password': typeof RecoverPasswordRoute
   '/signup/birthday': typeof SignupBirthdayRoute
+  '/signup/check-email': typeof SignupCheckEmailRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
   '/signup/people': typeof SignupPeopleRoute
   '/signup/photo': typeof SignupPhotoRoute
   '/signup/profile': typeof SignupProfileRoute
   '/signup/username': typeof SignupUsernameRoute
-  '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
   '/recover/': typeof RecoverIndexRoute
   '/signup/': typeof SignupIndexRoute
@@ -218,13 +218,13 @@ export interface FileRoutesByTo {
   '/recover/code': typeof RecoverCodeRoute
   '/recover/password': typeof RecoverPasswordRoute
   '/signup/birthday': typeof SignupBirthdayRoute
+  '/signup/check-email': typeof SignupCheckEmailRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
   '/signup/people': typeof SignupPeopleRoute
   '/signup/photo': typeof SignupPhotoRoute
   '/signup/profile': typeof SignupProfileRoute
   '/signup/username': typeof SignupUsernameRoute
-  '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
   '/recover': typeof RecoverIndexRoute
   '/signup': typeof SignupIndexRoute
@@ -248,13 +248,13 @@ export interface FileRoutesById {
   '/recover/code': typeof RecoverCodeRoute
   '/recover/password': typeof RecoverPasswordRoute
   '/signup/birthday': typeof SignupBirthdayRoute
+  '/signup/check-email': typeof SignupCheckEmailRoute
   '/signup/gender': typeof SignupGenderRoute
   '/signup/name': typeof SignupNameRoute
   '/signup/people': typeof SignupPeopleRoute
   '/signup/photo': typeof SignupPhotoRoute
   '/signup/profile': typeof SignupProfileRoute
   '/signup/username': typeof SignupUsernameRoute
-  '/signup/verify': typeof SignupVerifyRoute
   '/u/$username': typeof UUsernameRoute
   '/recover/': typeof RecoverIndexRoute
   '/signup/': typeof SignupIndexRoute
@@ -279,13 +279,13 @@ export interface FileRouteTypes {
     | '/recover/code'
     | '/recover/password'
     | '/signup/birthday'
+    | '/signup/check-email'
     | '/signup/gender'
     | '/signup/name'
     | '/signup/people'
     | '/signup/photo'
     | '/signup/profile'
     | '/signup/username'
-    | '/signup/verify'
     | '/u/$username'
     | '/recover/'
     | '/signup/'
@@ -306,13 +306,13 @@ export interface FileRouteTypes {
     | '/recover/code'
     | '/recover/password'
     | '/signup/birthday'
+    | '/signup/check-email'
     | '/signup/gender'
     | '/signup/name'
     | '/signup/people'
     | '/signup/photo'
     | '/signup/profile'
     | '/signup/username'
-    | '/signup/verify'
     | '/u/$username'
     | '/recover'
     | '/signup'
@@ -335,13 +335,13 @@ export interface FileRouteTypes {
     | '/recover/code'
     | '/recover/password'
     | '/signup/birthday'
+    | '/signup/check-email'
     | '/signup/gender'
     | '/signup/name'
     | '/signup/people'
     | '/signup/photo'
     | '/signup/profile'
     | '/signup/username'
-    | '/signup/verify'
     | '/u/$username'
     | '/recover/'
     | '/signup/'
@@ -500,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupBirthdayRouteImport
       parentRoute: typeof SignupRoute
     }
+    '/signup/check-email': {
+      id: '/signup/check-email'
+      path: '/check-email'
+      fullPath: '/signup/check-email'
+      preLoaderRoute: typeof SignupCheckEmailRouteImport
+      parentRoute: typeof SignupRoute
+    }
     '/signup/gender': {
       id: '/signup/gender'
       path: '/gender'
@@ -542,13 +549,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupUsernameRouteImport
       parentRoute: typeof SignupRoute
     }
-    '/signup/verify': {
-      id: '/signup/verify'
-      path: '/verify'
-      fullPath: '/signup/verify'
-      preLoaderRoute: typeof SignupVerifyRouteImport
-      parentRoute: typeof SignupRoute
-    }
     '/u/$username': {
       id: '/u/$username'
       path: '/u/$username'
@@ -576,25 +576,25 @@ const RecoverRouteWithChildren =
 
 interface SignupRouteChildren {
   SignupBirthdayRoute: typeof SignupBirthdayRoute
+  SignupCheckEmailRoute: typeof SignupCheckEmailRoute
   SignupGenderRoute: typeof SignupGenderRoute
   SignupNameRoute: typeof SignupNameRoute
   SignupPeopleRoute: typeof SignupPeopleRoute
   SignupPhotoRoute: typeof SignupPhotoRoute
   SignupProfileRoute: typeof SignupProfileRoute
   SignupUsernameRoute: typeof SignupUsernameRoute
-  SignupVerifyRoute: typeof SignupVerifyRoute
   SignupIndexRoute: typeof SignupIndexRoute
 }
 
 const SignupRouteChildren: SignupRouteChildren = {
   SignupBirthdayRoute: SignupBirthdayRoute,
+  SignupCheckEmailRoute: SignupCheckEmailRoute,
   SignupGenderRoute: SignupGenderRoute,
   SignupNameRoute: SignupNameRoute,
   SignupPeopleRoute: SignupPeopleRoute,
   SignupPhotoRoute: SignupPhotoRoute,
   SignupProfileRoute: SignupProfileRoute,
   SignupUsernameRoute: SignupUsernameRoute,
-  SignupVerifyRoute: SignupVerifyRoute,
   SignupIndexRoute: SignupIndexRoute,
 }
 
