@@ -10,7 +10,13 @@ import {
 } from "react";
 import { supabase } from "@/lib/supabase";
 
-export type SessionUser = { id: string; username: string; fullName: string };
+export type SessionUser = {
+  id: string;
+  username: string;
+  fullName: string;
+  /** false while the signup flow still has required profile fields to collect. */
+  profileComplete: boolean;
+};
 
 type SessionState =
   | { status: "loading"; user: null }
@@ -32,7 +38,7 @@ async function loadUser(): Promise<SessionUser | null> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username, full_name")
+    .select("username, full_name, birthday, gender")
     .eq("id", authUser.id)
     .maybeSingle();
 
@@ -41,10 +47,18 @@ async function loadUser(): Promise<SessionUser | null> {
     `sx${(authUser.phone ?? "").slice(-4)}` ||
     "you";
 
+  const profileComplete = Boolean(
+    profile?.full_name?.trim() &&
+      profile?.birthday &&
+      profile?.gender?.trim() &&
+      profile?.username?.trim(),
+  );
+
   return {
     id: authUser.id,
     username: profile?.username ?? fallback,
     fullName: profile?.full_name || profile?.username || fallback,
+    profileComplete,
   };
 }
 
