@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ClipsRouteImport } from './routes/clips'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as FollowersRouteImport } from './routes/followers'
+import { Route as FollowingRouteImport } from './routes/following'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as NewMessageRouteImport } from './routes/new-message'
 import { Route as NotificationsRouteImport } from './routes/notifications'
@@ -55,6 +57,16 @@ const CreateRoute = CreateRouteImport.update({
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FollowersRoute = FollowersRouteImport.update({
+  id: '/followers',
+  path: '/followers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FollowingRoute = FollowingRouteImport.update({
+  id: '/following',
+  path: '/following',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesRoute = MessagesRouteImport.update({
@@ -178,6 +190,8 @@ export interface FileRoutesByFullPath {
   '/clips': typeof ClipsRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/followers': typeof FollowersRoute
+  '/following': typeof FollowingRoute
   '/messages': typeof MessagesRoute
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
@@ -207,6 +221,8 @@ export interface FileRoutesByTo {
   '/clips': typeof ClipsRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/followers': typeof FollowersRoute
+  '/following': typeof FollowingRoute
   '/messages': typeof MessagesRoute
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
@@ -235,6 +251,8 @@ export interface FileRoutesById {
   '/clips': typeof ClipsRoute
   '/create': typeof CreateRoute
   '/discover': typeof DiscoverRoute
+  '/followers': typeof FollowersRoute
+  '/following': typeof FollowingRoute
   '/messages': typeof MessagesRoute
   '/new-message': typeof NewMessageRoute
   '/notifications': typeof NotificationsRoute
@@ -266,6 +284,8 @@ export interface FileRouteTypes {
     | '/clips'
     | '/create'
     | '/discover'
+    | '/followers'
+    | '/following'
     | '/messages'
     | '/new-message'
     | '/notifications'
@@ -295,6 +315,8 @@ export interface FileRouteTypes {
     | '/clips'
     | '/create'
     | '/discover'
+    | '/followers'
+    | '/following'
     | '/messages'
     | '/new-message'
     | '/notifications'
@@ -322,6 +344,8 @@ export interface FileRouteTypes {
     | '/clips'
     | '/create'
     | '/discover'
+    | '/followers'
+    | '/following'
     | '/messages'
     | '/new-message'
     | '/notifications'
@@ -352,6 +376,8 @@ export interface RootRouteChildren {
   ClipsRoute: typeof ClipsRoute
   CreateRoute: typeof CreateRoute
   DiscoverRoute: typeof DiscoverRoute
+  FollowersRoute: typeof FollowersRoute
+  FollowingRoute: typeof FollowingRoute
   MessagesRoute: typeof MessagesRoute
   NewMessageRoute: typeof NewMessageRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -393,6 +419,20 @@ declare module '@tanstack/react-router' {
       path: '/discover'
       fullPath: '/discover'
       preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/followers': {
+      id: '/followers'
+      path: '/followers'
+      fullPath: '/followers'
+      preLoaderRoute: typeof FollowersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/following': {
+      id: '/following'
+      path: '/following'
+      fullPath: '/following'
+      preLoaderRoute: typeof FollowingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages': {
@@ -606,6 +646,8 @@ const rootRouteChildren: RootRouteChildren = {
   ClipsRoute: ClipsRoute,
   CreateRoute: CreateRoute,
   DiscoverRoute: DiscoverRoute,
+  FollowersRoute: FollowersRoute,
+  FollowingRoute: FollowingRoute,
   MessagesRoute: MessagesRoute,
   NewMessageRoute: NewMessageRoute,
   NotificationsRoute: NotificationsRoute,
