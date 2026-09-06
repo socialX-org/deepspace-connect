@@ -216,7 +216,44 @@ export const profile = {
   posts: 148,
   followers: "24.6k",
   following: 312,
+  followersCount: 1240,
+  followingCount: 430,
 };
+
+export type FollowAccount = {
+  id: string;
+  user: string;
+  name: string;
+  avatar: string;
+  isFollowing?: boolean;
+};
+
+export const sampleFollowers: FollowAccount[] = [
+  { id: "f1", user: "mara.k", name: "Mara K", avatar: avatar1, isFollowing: false },
+  { id: "f2", user: "orenlab", name: "Oren Lab", avatar: avatar2, isFollowing: true },
+  { id: "f3", user: "sable", name: "Sable", avatar: avatar1, isFollowing: false },
+  { id: "f4", user: "elias", name: "Elias", avatar: avatar2, isFollowing: true },
+  { id: "f5", user: "juno", name: "Juno", avatar: avatar1, isFollowing: false },
+  { id: "f6", user: "nightform", name: "Night Form", avatar: avatar2, isFollowing: true },
+];
+
+export const sampleFollowing: FollowAccount[] = [
+  { id: "g1", user: "mara.k", name: "Mara K", avatar: avatar1, isFollowing: true },
+  { id: "g2", user: "orenlab", name: "Oren Lab", avatar: avatar2, isFollowing: true },
+  { id: "g3", user: "elias", name: "Elias", avatar: avatar2, isFollowing: true },
+  { id: "g4", user: "nightform", name: "Night Form", avatar: avatar2, isFollowing: true },
+  { id: "g5", user: "kira.frame", name: "Kira Frame", avatar: avatar1, isFollowing: true },
+  { id: "g6", user: "noir.studio", name: "Noir Studio", avatar: avatar2, isFollowing: true },
+  { id: "g7", user: "velvet.raw", name: "Velvet Raw", avatar: avatar1, isFollowing: true },
+  { id: "g8", user: "cine.luxe", name: "Cine Luxe", avatar: avatar2, isFollowing: true },
+];
+
+export const sampleSuggested: FollowAccount[] = [
+  { id: "s1", user: "archive.00", name: "Archive Zero", avatar: avatar1 },
+  { id: "s2", user: "mono.collective", name: "Mono Collective", avatar: avatar2 },
+  { id: "s3", user: "redline.film", name: "Redline Film", avatar: avatar1 },
+  { id: "s4", user: "darkroom.co", name: "Darkroom Co", avatar: avatar2 },
+];
 
 export const conversations = [
   {
