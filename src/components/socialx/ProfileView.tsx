@@ -59,11 +59,11 @@ export function ProfileView({ profile, isOwn }: { profile: ProfileData; isOwn: b
             </span>
           </span>
           <div className="flex flex-1 justify-between">
-            {[
+            {([
               ["Posts", profile.posts, null],
               ["Followers", profile.followers, "/followers"],
               ["Following", profile.following, "/following"],
-            ].map(([label, value, to]) => {
+            ] as const).map(([label, value, to]) => {
               const content = (
                 <>
                   <p className="font-display text-[16px] font-semibold">
